@@ -5,7 +5,7 @@ import io
 import cv2
 from imageio import imread
 import matplotlib.pyplot as plt
-import tensorflow-gpu as tf
+import tensorflow as tf
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.applications.resnet50 import preprocess_input
 from tensorflow.keras.applications import imagenet_utils
