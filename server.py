@@ -5,6 +5,7 @@ import io
 import cv2
 from imageio import imread
 import matplotlib.pyplot as plt
+import tensorflow-gpu as tf
 from tensorflow.keras.applications import ResNet50
 from tensorflow.keras.applications.resnet50 import preprocess_input
 from tensorflow.keras.applications import imagenet_utils
@@ -13,6 +14,7 @@ from imutils.object_detection import non_max_suppression
 import numpy as np
 import argparse
 
+print("Num GPU's Avaliable: ", len(tf.config.list_physical_devices('GPU')))
 def selective_search(image, method="fast"):
     # initialize OpenCV's selective search implementation and set the
     # input image
@@ -33,7 +35,6 @@ def selective_search(image, method="fast"):
 
 async def hello(websocket, path):
     image = await websocket.recv()
-    print(image)
     #img = imread(io.BytesIO(base64.b64decode(name)))
 
         # grab the label filters command line argument
@@ -57,7 +58,7 @@ async def hello(websocket, path):
     im_arr = np.frombuffer(im_bytes, dtype=np.uint8)  # im_arr is one-dim Numpy array
     image = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
 
-    image = cv2.resize(image,None,fx=0.4,fy=0.4)
+    image = cv2.resize(image,None,fx=0.1,fy=0.1)
     (H, W) = image.shape[:2]
 
     # run selective search on the input image
@@ -125,6 +126,7 @@ async def hello(websocket, path):
             labels[label] = L
 
             # loop over the labels for each of detected objects in the image
+    lst = []
     for label in labels.keys():
         # clone the original image so that we can draw on it
         print("[INFO] showing results for '{}'".format(label))
@@ -134,8 +136,9 @@ async def hello(websocket, path):
         # show the results *before* applying non-maxima suppression, then
         # clone the image again so we can display the results *after*
         # applying non-maxima suppression
+        lst.append(label)
 
-        await websocket.send(label)
+    await websocket.send(lst)
 
 start_server = websockets.serve(hello, "localhost", 8080)
 
