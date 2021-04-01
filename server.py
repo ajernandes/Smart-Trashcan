@@ -58,7 +58,7 @@ async def hello(websocket, path):
     im_arr = np.frombuffer(im_bytes, dtype=np.uint8)  # im_arr is one-dim Numpy array
     image = cv2.imdecode(im_arr, flags=cv2.IMREAD_COLOR)
 
-    image = cv2.resize(image,None,fx=0.1,fy=0.1)
+    #image = cv2.resize(image,None,fx=0.1,fy=0.1)
     (H, W) = image.shape[:2]
 
     # run selective search on the input image
@@ -103,7 +103,8 @@ async def hello(websocket, path):
     # initialize a dictionary which maps class labels (keys) to any
     # bounding box associated with that label (values)
     labels = {}
-
+    count = 0
+    towels = 0
     # loop over the predictions
     for (i, p) in enumerate(preds):
         # grab the prediction information for the current region proposal
@@ -114,7 +115,8 @@ async def hello(websocket, path):
             continue
         # filter out weak detections by ensuring the predicted probability
         # is greater than the minimum probability
-        if prob >= 0.9:
+        if prob >= 0.85:
+
             # grab the bounding box associated with the prediction and
             # convert the coordinates
             (x, y, w, h) = boxes[i]
@@ -130,15 +132,12 @@ async def hello(websocket, path):
     for label in labels.keys():
         # clone the original image so that we can draw on it
         print("[INFO] showing results for '{}'".format(label))
-        clone = image.copy()
-        # loop over all bounding boxes for the current label
-
-        # show the results *before* applying non-maxima suppression, then
-        # clone the image again so we can display the results *after*
-        # applying non-maxima suppression
+        if label == "paper_towel":
+            towels += 1
+        count += 1
         lst.append(label)
 
-    await websocket.send(lst)
+    await websocket.send(str((towels/count) >= .85))
 
 start_server = websockets.serve(hello, "192.168.1.2", 8080)
 
