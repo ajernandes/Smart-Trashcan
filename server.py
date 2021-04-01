@@ -13,7 +13,7 @@ from tensorflow.keras.preprocessing.image import img_to_array
 from imutils.object_detection import non_max_suppression
 import numpy as np
 import argparse
-
+tf.config.experimental.enable_mlir_graph_optimization()
 print("Num GPU's Avaliable: ", len(tf.config.list_physical_devices('GPU')))
 def selective_search(image, method="fast"):
     # initialize OpenCV's selective search implementation and set the
@@ -116,7 +116,10 @@ async def hello(websocket, path):
         # filter out weak detections by ensuring the predicted probability
         # is greater than the minimum probability
         if prob >= 0.85:
-
+            print(label + str(prob))
+            if label == "paper_towel":
+                towels += 1
+            count += 1
             # grab the bounding box associated with the prediction and
             # convert the coordinates
             (x, y, w, h) = boxes[i]
@@ -132,12 +135,10 @@ async def hello(websocket, path):
     for label in labels.keys():
         # clone the original image so that we can draw on it
         print("[INFO] showing results for '{}'".format(label))
-        if label == "paper_towel":
-            towels += 1
-        count += 1
+
         lst.append(label)
 
-    await websocket.send(str((towels/count) >= .85))
+    await websocket.send(str((towels/count) >= .7))
 
 start_server = websockets.serve(hello, "192.168.1.2", 8080)
 
