@@ -11,7 +11,7 @@ with open("image.jpg", "rb") as img_file:
     ws.send(encoded_string)
     print("Processing")
     result =  ws.recv()
-    if result:
+    if result == "True":
         print("KEEP")
     else:
         print("DUMP")
