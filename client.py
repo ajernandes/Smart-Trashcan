@@ -3,12 +3,19 @@ from websocket import create_connection
 from picamera import PiCamera
 import random
 
+
+#This uses the camera on the raspberry pi to take a picture, and then sends it as a base 64 encoded string over a websocket connection
+#This also impliments testing protocols, which allowed easy and quick testing and recording
+
+url = "ws://192.168.1.2:8080"
+
 camera = PiCamera()
 
-items = ["paper towel", "platic fork/spoon", "banana", "mint wrappers", "disposiable paper cup", "plastic bag", "candy wrapper", "condoments"]
+items = ["paper towel", "platic fork/spoon", "banana", "mint wrappers", "paper cup", "plastic bag", "candy wrapper", "condoment containers"]
 
 
-count = len(open('results.csv').readlines(  ))
+
+count = len(open('results.csv', 'w+').readlines(  ))
 rand = random.random()
 if rand <= 0.8:
     i = 0
@@ -16,7 +23,7 @@ else:
     i = int(random.random() * len(items) + 1)
 print(items[i])
 input("Press Enter to continue...")
-ws = create_connection("ws://192.168.1.2:8080")
+ws = create_connection(url)
 
 camera.capture("image_" + str(count) + ".jpg")
 with open("image_" + str(count) + ".jpg", "rb") as img_file:

@@ -6,6 +6,9 @@ from imutils.object_detection import non_max_suppression
 import numpy as np
 import argparse
 import cv2
+
+#this was used in early testing, uses many of the same methods as the final solution
+
 def selective_search(image, method="fast"):
 	# initialize OpenCV's selective search implementation and set the
 	# input image

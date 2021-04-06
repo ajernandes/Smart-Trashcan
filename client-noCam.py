@@ -1,6 +1,7 @@
 import base64
 from websocket import create_connection
 
+#this was used in early prototyping, but not in final testing
 
 ws = create_connection("ws://192.168.1.2:8080")
 with open("image.jpg", "rb") as img_file:

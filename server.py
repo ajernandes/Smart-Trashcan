@@ -1,3 +1,13 @@
+# uses a lot of code from this tutorial: https://www.pyimagesearch.com/2020/07/06/region-proposal-object-detection-with-opencv-keras-and-tensorflow/
+
+#creates a websocket sever that accepts connections from clients who are expected to send base64 encoded image strings
+
+#does not impliment any error handling if the data is not decodable, since this is just a small scale test
+
+#much of the comments below are from the original code author
+
+
+
 import asyncio
 import websockets
 import base64
